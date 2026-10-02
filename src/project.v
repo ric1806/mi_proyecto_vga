@@ -56,8 +56,8 @@ module tt_um_vga_example(
 
   // Global scrolling offsets (parallax)
   wire signed [11:0] scroll_fast = $signed({2'b00, frame_counter[9:0]});
-  wire signed [11:0] scroll_med  = $signed({3'b00, frame_counter[10:1]});
-  wire signed [11:0] scroll_slow = $signed({4'b00, frame_counter[11:2]});
+  wire signed [11:0] scroll_med  = $signed({2'b00, frame_counter[10:1]});
+  wire signed [11:0] scroll_slow = $signed({2'b00, frame_counter[11:2]});
 
   // =====================================================================
   // 2. SUN AND SKY
