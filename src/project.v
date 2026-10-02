@@ -68,9 +68,9 @@ module tt_um_vga_example(
   wire signed [11:0] asun_dy = (sun_dy < 12'sd0) ? -sun_dy : sun_dy;
   
   // Sun core
-  wire sun_core = (asun_dx < 12'sd25) && (asun_dy < 12'sd25) && ((asun_dx + asun_dy) < 12'sd35);
+  wire sun_core = (asun_dx < 12'sd25) && (asun_dy < 12'sd25);
   // Sun corona (aura)
-  wire sun_aura = (asun_dx < 12'sd35) && (asun_dy < 12'sd35) && ((asun_dx + asun_dy) < 12'sd45);
+  wire sun_aura = (asun_dx < 12'sd35) && (asun_dy < 12'sd35);
 
   // =====================================================================
   // 3. SCROLLING MOUNTAINS
@@ -94,11 +94,11 @@ module tt_um_vga_example(
   // =====================================================================
   // 4. CLOUDS
   // =====================================================================
-  wire signed [11:0] c1_x = cx + scroll_slow - 12'sd100;
+  wire signed [11:0] c1_x = m1_x - 12'sd100;
   wire signed [11:0] ac1_x = (c1_x < 12'sd0) ? -c1_x : c1_x;
   wire cloud1 = (ac1_x < 12'sd40) && (cy > -12'sd150) && (cy < -12'sd120);
   
-  wire signed [11:0] c2_x = cx + scroll_slow + 12'sd80;
+  wire signed [11:0] c2_x = m1_x + 12'sd80;
   wire signed [11:0] ac2_x = (c2_x < 12'sd0) ? -c2_x : c2_x;
   wire cloud2 = (ac2_x < 12'sd30) && (cy > -12'sd180) && (cy < -12'sd160);
 
@@ -110,14 +110,15 @@ module tt_um_vga_example(
   // Bird wing animation (flap)
   wire signed [11:0] flap = tail_swing;
   
-  wire signed [11:0] bd_x = cx - scroll_med + 12'sd100;
+  wire signed [11:0] cx_med = cx - scroll_med;
+  wire signed [11:0] bd_x = cx_med + 12'sd100;
   wire signed [11:0] abd_x = (bd_x < 12'sd0) ? -bd_x : bd_x;
   wire signed [11:0] bd_y = cy + 12'sd80;
   // V shape: y = abs(x) / 2 + flap
   wire signed [11:0] v_shape = (abd_x / 2) + flap;
   wire bird1 = (abd_x < 12'sd10) && (bd_y > v_shape) && (bd_y < v_shape + 12'sd3);
 
-  wire signed [11:0] bd2_x = cx - scroll_med + 12'sd130;
+  wire signed [11:0] bd2_x = cx_med + 12'sd130;
   wire signed [11:0] abd2_x = (bd2_x < 12'sd0) ? -bd2_x : bd2_x;
   wire signed [11:0] bd2_y = cy + 12'sd90;
   wire signed [11:0] v2_shape = (abd2_x / 2) + flap;
@@ -138,7 +139,7 @@ module tt_um_vga_example(
   // Leaves
   wire signed [11:0] lf_y = cy + 12'sd30;
   wire signed [11:0] alf_y = (lf_y < 12'sd0) ? -lf_y : lf_y;
-  wire tree_leaves = (atr_x < 12'sd25) && (alf_y < 12'sd35) && ((atr_x + alf_y) < 12'sd45);
+  wire tree_leaves = (atr_x < 12'sd25) && (alf_y < 12'sd35);
   
   wire tree = tree_trunk | tree_leaves;
 
@@ -149,32 +150,32 @@ module tt_um_vga_example(
   wire signed [11:0] h_dx = cx - 12'sd30; wire signed [11:0] h_dy = cy + 12'sd40;
   wire signed [11:0] ah_dx = (h_dx < 12'sd0) ? -h_dx : h_dx;
   wire signed [11:0] ah_dy = (h_dy < 12'sd0) ? -h_dy : h_dy;
-  wire head = (ah_dx < 12'sd20) && (ah_dy < 12'sd20) && ((ah_dx + ah_dy) < 12'sd32);
+  wire head = (ah_dx < 12'sd20) && (ah_dy < 12'sd20);
 
   // SNOUT
   wire signed [11:0] sn_dx = cx - 12'sd52; wire signed [11:0] sn_dy = cy + 12'sd28;
   wire signed [11:0] asn_dx = (sn_dx < 12'sd0) ? -sn_dx : sn_dx;
   wire signed [11:0] asn_dy = (sn_dy < 12'sd0) ? -sn_dy : sn_dy;
-  wire snout = (asn_dx < 12'sd14) && (asn_dy < 12'sd10) && ((asn_dx + asn_dy) < 12'sd20);
+  wire snout = (asn_dx < 12'sd14) && (asn_dy < 12'sd10);
 
   // NOSE
   wire signed [11:0] n_dx = cx - 12'sd65; wire signed [11:0] n_dy = cy + 12'sd32;
   wire signed [11:0] an_dx = (n_dx < 12'sd0) ? -n_dx : n_dx;
   wire signed [11:0] an_dy = (n_dy < 12'sd0) ? -n_dy : n_dy;
-  wire nose = (an_dx < 12'sd4) && (an_dy < 12'sd4) && ((an_dx + an_dy) < 12'sd6);
+  wire nose = (an_dx < 12'sd4) && (an_dy < 12'sd4);
 
   // EYE & PUPIL
   wire signed [11:0] e_dx = cx - 12'sd35; wire signed [11:0] e_dy = cy + 12'sd45;
   wire signed [11:0] ae_dx = (e_dx < 12'sd0) ? -e_dx : e_dx;
   wire signed [11:0] ae_dy = (e_dy < 12'sd0) ? -e_dy : e_dy;
-  wire eye = (ae_dx < 12'sd3) && (ae_dy < 12'sd4) && ((ae_dx + ae_dy) < 12'sd5);
+  wire eye = (ae_dx < 12'sd3) && (ae_dy < 12'sd4);
   wire pupil = eye && (cx > 12'sd34) && (cy < -12'sd44);
 
   // EAR
   wire signed [11:0] ea_dx = cx - 12'sd15; wire signed [11:0] ea_dy = cy + 12'sd35;
   wire signed [11:0] aea_dx = (ea_dx < 12'sd0) ? -ea_dx : ea_dx;
   wire signed [11:0] aea_dy = (ea_dy < 12'sd0) ? -ea_dy : ea_dy;
-  wire ear = (aea_dx < 12'sd8) && (aea_dy < 12'sd16) && ((aea_dx + aea_dy) < 12'sd20);
+  wire ear = (aea_dx < 12'sd8) && (aea_dy < 12'sd16);
 
   // COLLAR & TAG
   wire signed [11:0] col_dx = cx - 12'sd15; wire signed [11:0] col_dy = cy + 12'sd15;
@@ -187,13 +188,13 @@ module tt_um_vga_example(
   wire signed [11:0] to_dx = cx - 12'sd55; wire signed [11:0] to_dy = cy + 12'sd18 + pant;
   wire signed [11:0] ato_dx = (to_dx < 12'sd0) ? -to_dx : to_dx;
   wire signed [11:0] ato_dy = (to_dy < 12'sd0) ? -to_dy : to_dy;
-  wire tongue = (ato_dx < 12'sd5) && (ato_dy < 12'sd8) && ((ato_dx + ato_dy) < 12'sd10);
+  wire tongue = (ato_dx < 12'sd5) && (ato_dy < 12'sd8);
 
   // BODY & BELLY
   wire signed [11:0] b_dx = cx + 12'sd15; wire signed [11:0] b_dy = cy + 12'sd5;
   wire signed [11:0] ab_dx = (b_dx < 12'sd0) ? -b_dx : b_dx;
   wire signed [11:0] ab_dy = (b_dy < 12'sd0) ? -b_dy : b_dy;
-  wire body = (ab_dx < 12'sd40) && (ab_dy < 12'sd18) && ((ab_dx + ab_dy) < 12'sd52);
+  wire body = (ab_dx < 12'sd40) && (ab_dy < 12'sd18);
   wire belly = body && (cy > 12'sd12); 
 
   // LEGS & PAWS
