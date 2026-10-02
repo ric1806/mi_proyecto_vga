@@ -22,8 +22,8 @@ module tt_um_vga_example(
   wire [1:0] R_vga, G_vga, B_vga;
 
   assign uo_out = {hsync, B_vga[0], G_vga[0], R_vga[0], vsync, B_vga[1], G_vga[1], R_vga[1]};
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+  assign uio_out = 8'b0;
+  assign uio_oe  = 8'b0;
   wire _unused_ok = &{ena, ui_in, uio_in};
 
   reg [15:0] frame_counter;
