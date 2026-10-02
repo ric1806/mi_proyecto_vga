@@ -198,30 +198,30 @@ module tt_um_vga_example(
 
   // LEGS & PAWS
   wire signed [11:0] fl_y = cy - 12'sd10;
-  wire signed [11:0] fl_x = cx - 12'sd10 - (fl_y * swing) / 32;
+  wire signed [11:0] fl_x = cx - 12'sd10 - swing;
   wire signed [11:0] afl_x = (fl_x < 12'sd0) ? -fl_x : fl_x;
   wire f_leg = (afl_x < 12'sd6) && (fl_y > 12'sd0) && (fl_y < 12'sd25);
   wire f_paw = (afl_x < 12'sd8) && (fl_y > 12'sd20) && (fl_y < 12'sd25) && (fl_x > -12'sd2); 
 
-  wire signed [11:0] fl2_x = cx - 12'sd5 + (fl_y * swing) / 32;
+  wire signed [11:0] fl2_x = cx - 12'sd5 + swing;
   wire signed [11:0] afl2_x = (fl2_x < 12'sd0) ? -fl2_x : fl2_x;
   wire f_leg2 = (afl2_x < 12'sd6) && (fl_y > 12'sd0) && (fl_y < 12'sd22);
   wire f_paw2 = (afl2_x < 12'sd8) && (fl_y > 12'sd17) && (fl_y < 12'sd22) && (fl2_x > -12'sd2);
 
   wire signed [11:0] bl_y = cy - 12'sd10;
-  wire signed [11:0] bl_x = cx + 12'sd35 + (bl_y * swing) / 32;
+  wire signed [11:0] bl_x = cx + 12'sd35 + swing;
   wire signed [11:0] abl_x = (bl_x < 12'sd0) ? -bl_x : bl_x;
   wire b_leg = (abl_x < 12'sd7) && (bl_y > 12'sd0) && (bl_y < 12'sd25);
   wire b_paw = (abl_x < 12'sd9) && (bl_y > 12'sd20) && (bl_y < 12'sd25) && (bl_x > -12'sd2);
 
-  wire signed [11:0] bl2_x = cx + 12'sd45 - (bl_y * swing) / 32;
+  wire signed [11:0] bl2_x = cx + 12'sd45 - swing;
   wire signed [11:0] abl2_x = (bl2_x < 12'sd0) ? -bl2_x : bl2_x;
   wire b_leg2 = (abl2_x < 12'sd7) && (bl_y > 12'sd0) && (bl_y < 12'sd22);
   wire b_paw2 = (abl2_x < 12'sd9) && (bl_y > 12'sd17) && (bl_y < 12'sd22) && (bl2_x > -12'sd2);
 
   // TAIL
   wire signed [11:0] ty = cy + 12'sd15;
-  wire signed [11:0] tx = cx + 12'sd55 - (ty * tail_swing) / 16;
+  wire signed [11:0] tx = cx + 12'sd55 - tail_swing;
   wire signed [11:0] atx = (tx < 12'sd0) ? -tx : tx;
   wire tail = (atx < 12'sd5) && (ty < 12'sd0) && (ty > -12'sd25);
 
