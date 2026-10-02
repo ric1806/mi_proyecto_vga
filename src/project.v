@@ -78,7 +78,7 @@ module tt_um_vga_example(
   // Mountain 1 (Background)
   wire signed [11:0] m1_x = cx + scroll_slow;
   // Modulo 256 for repeating mountains
-  wire signed [11:0] m1_mod = {4'b0, m1_x[7:0]} - 12'sd128;
+  wire signed [11:0] m1_mod = (m1_x & 12'sd255) - 12'sd128;
   wire signed [11:0] am1_x = (m1_mod < 12'sd0) ? -m1_mod : m1_mod;
   // Mountain height profile (triangle)
   wire signed [11:0] m1_h = 12'sd100 - am1_x;
@@ -86,7 +86,7 @@ module tt_um_vga_example(
 
   // Mountain 2 (Foreground)
   wire signed [11:0] m2_x = cx + scroll_med + 12'sd64;
-  wire signed [11:0] m2_mod = {3'b0, m2_x[8:0]} - 12'sd256;
+  wire signed [11:0] m2_mod = (m2_x & 12'sd511) - 12'sd256;
   wire signed [11:0] am2_x = (m2_mod < 12'sd0) ? -m2_mod : m2_mod;
   wire signed [11:0] m2_h = 12'sd50 - (am2_x / 2);
   wire mount2 = (cy > -m2_h) && (cy < 12'sd40);
@@ -129,7 +129,7 @@ module tt_um_vga_example(
   // 6. SCROLLING TREES
   // =====================================================================
   wire signed [11:0] tr_x = cx + scroll_fast;
-  wire signed [11:0] tr_mod = {4'b0, tr_x[7:0]} - 12'sd128;
+  wire signed [11:0] tr_mod = (tr_x & 12'sd255) - 12'sd128;
   wire signed [11:0] atr_x = (tr_mod < 12'sd0) ? -tr_mod : tr_mod;
   
   // Trunk
