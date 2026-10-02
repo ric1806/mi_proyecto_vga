@@ -50,9 +50,9 @@ module tt_um_vga_example(
   wire signed [11:0] cy = $signed({2'b00, pix_y}) - 12'sd240;
 
   // Dog animation waves
-  wire signed [11:0] swing = $signed({7'b0, (frame_counter[5] ? ~frame_counter[4:0] : frame_counter[4:0])}) - 12'sd16;
-  wire signed [11:0] tail_swing = $signed({8'b0, (frame_counter[3] ? ~frame_counter[2:0] : frame_counter[2:0])}) - 12'sd4;
-  wire signed [11:0] pant = tail_swing / 2; 
+  wire signed [9:0] swing = $signed({5'b0, (frame_counter[5] ? ~frame_counter[4:0] : frame_counter[4:0])}) - 10'sd16;
+  wire signed [9:0] tail_swing = $signed({7'b0, (frame_counter[3] ? ~frame_counter[2:0] : frame_counter[2:0])}) - 10'sd4;
+  wire signed [9:0] pant = tail_swing / 2; 
 
   // Global scrolling offsets (parallax)
   wire signed [11:0] scroll_fast = $signed({2'b00, frame_counter[9:0]});
@@ -146,85 +146,87 @@ module tt_um_vga_example(
   // =====================================================================
   // 7. THE DOG (Detailed SDFs)
   // =====================================================================
+  wire signed [9:0] dog_cx = $signed(cx[9:0]);
+  wire signed [9:0] dog_cy = $signed(cy[9:0]);
   // HEAD
-  wire signed [11:0] h_dx = cx - 12'sd30; wire signed [11:0] h_dy = cy + 12'sd40;
-  wire signed [11:0] ah_dx = (h_dx < 12'sd0) ? -h_dx : h_dx;
-  wire signed [11:0] ah_dy = (h_dy < 12'sd0) ? -h_dy : h_dy;
-  wire head = (ah_dx < 12'sd20) && (ah_dy < 12'sd20);
+  wire signed [9:0] h_dx = dog_cx - 10'sd30; wire signed [9:0] h_dy = dog_cy + 10'sd40;
+  wire signed [9:0] ah_dx = (h_dx < 10'sd0) ? -h_dx : h_dx;
+  wire signed [9:0] ah_dy = (h_dy < 10'sd0) ? -h_dy : h_dy;
+  wire head = (ah_dx < 10'sd20) && (ah_dy < 10'sd20);
 
   // SNOUT
-  wire signed [11:0] sn_dx = cx - 12'sd52; wire signed [11:0] sn_dy = cy + 12'sd28;
-  wire signed [11:0] asn_dx = (sn_dx < 12'sd0) ? -sn_dx : sn_dx;
-  wire signed [11:0] asn_dy = (sn_dy < 12'sd0) ? -sn_dy : sn_dy;
-  wire snout = (asn_dx < 12'sd14) && (asn_dy < 12'sd10);
+  wire signed [9:0] sn_dx = dog_cx - 10'sd52; wire signed [9:0] sn_dy = dog_cy + 10'sd28;
+  wire signed [9:0] asn_dx = (sn_dx < 10'sd0) ? -sn_dx : sn_dx;
+  wire signed [9:0] asn_dy = (sn_dy < 10'sd0) ? -sn_dy : sn_dy;
+  wire snout = (asn_dx < 10'sd14) && (asn_dy < 10'sd10);
 
   // NOSE
-  wire signed [11:0] n_dx = cx - 12'sd65; wire signed [11:0] n_dy = cy + 12'sd32;
-  wire signed [11:0] an_dx = (n_dx < 12'sd0) ? -n_dx : n_dx;
-  wire signed [11:0] an_dy = (n_dy < 12'sd0) ? -n_dy : n_dy;
-  wire nose = (an_dx < 12'sd4) && (an_dy < 12'sd4);
+  wire signed [9:0] n_dx = dog_cx - 10'sd65; wire signed [9:0] n_dy = dog_cy + 10'sd32;
+  wire signed [9:0] an_dx = (n_dx < 10'sd0) ? -n_dx : n_dx;
+  wire signed [9:0] an_dy = (n_dy < 10'sd0) ? -n_dy : n_dy;
+  wire nose = (an_dx < 10'sd4) && (an_dy < 10'sd4);
 
   // EYE & PUPIL
-  wire signed [11:0] e_dx = cx - 12'sd35; wire signed [11:0] e_dy = cy + 12'sd45;
-  wire signed [11:0] ae_dx = (e_dx < 12'sd0) ? -e_dx : e_dx;
-  wire signed [11:0] ae_dy = (e_dy < 12'sd0) ? -e_dy : e_dy;
-  wire eye = (ae_dx < 12'sd3) && (ae_dy < 12'sd4);
-  wire pupil = eye && (cx > 12'sd34) && (cy < -12'sd44);
+  wire signed [9:0] e_dx = dog_cx - 10'sd35; wire signed [9:0] e_dy = dog_cy + 10'sd45;
+  wire signed [9:0] ae_dx = (e_dx < 10'sd0) ? -e_dx : e_dx;
+  wire signed [9:0] ae_dy = (e_dy < 10'sd0) ? -e_dy : e_dy;
+  wire eye = (ae_dx < 10'sd3) && (ae_dy < 10'sd4);
+  wire pupil = eye && (dog_cx > 10'sd34) && (dog_cy < -10'sd44);
 
   // EAR
-  wire signed [11:0] ea_dx = cx - 12'sd15; wire signed [11:0] ea_dy = cy + 12'sd35;
-  wire signed [11:0] aea_dx = (ea_dx < 12'sd0) ? -ea_dx : ea_dx;
-  wire signed [11:0] aea_dy = (ea_dy < 12'sd0) ? -ea_dy : ea_dy;
-  wire ear = (aea_dx < 12'sd8) && (aea_dy < 12'sd16);
+  wire signed [9:0] ea_dx = dog_cx - 10'sd15; wire signed [9:0] ea_dy = dog_cy + 10'sd35;
+  wire signed [9:0] aea_dx = (ea_dx < 10'sd0) ? -ea_dx : ea_dx;
+  wire signed [9:0] aea_dy = (ea_dy < 10'sd0) ? -ea_dy : ea_dy;
+  wire ear = (aea_dx < 10'sd8) && (aea_dy < 10'sd16);
 
   // COLLAR & TAG
-  wire signed [11:0] col_dx = cx - 12'sd15; wire signed [11:0] col_dy = cy + 12'sd15;
-  wire signed [11:0] acol_dx = (col_dx < 12'sd0) ? -col_dx : col_dx;
-  wire signed [11:0] acol_dy = (col_dy < 12'sd0) ? -col_dy : col_dy;
-  wire collar = (acol_dx < 12'sd12) && (acol_dy < 12'sd6);
-  wire tag = (acol_dx < 12'sd4) && (col_dy > 12'sd2) && (col_dy < 12'sd8); 
+  wire signed [9:0] col_dx = dog_cx - 10'sd15; wire signed [9:0] col_dy = dog_cy + 10'sd15;
+  wire signed [9:0] acol_dx = (col_dx < 10'sd0) ? -col_dx : col_dx;
+  wire signed [9:0] acol_dy = (col_dy < 10'sd0) ? -col_dy : col_dy;
+  wire collar = (acol_dx < 10'sd12) && (acol_dy < 10'sd6);
+  wire tag = (acol_dx < 10'sd4) && (col_dy > 10'sd2) && (col_dy < 10'sd8); 
 
   // TONGUE
-  wire signed [11:0] to_dx = cx - 12'sd55; wire signed [11:0] to_dy = cy + 12'sd18 + pant;
-  wire signed [11:0] ato_dx = (to_dx < 12'sd0) ? -to_dx : to_dx;
-  wire signed [11:0] ato_dy = (to_dy < 12'sd0) ? -to_dy : to_dy;
-  wire tongue = (ato_dx < 12'sd5) && (ato_dy < 12'sd8);
+  wire signed [9:0] to_dx = dog_cx - 10'sd55; wire signed [9:0] to_dy = dog_cy + 10'sd18 + pant;
+  wire signed [9:0] ato_dx = (to_dx < 10'sd0) ? -to_dx : to_dx;
+  wire signed [9:0] ato_dy = (to_dy < 10'sd0) ? -to_dy : to_dy;
+  wire tongue = (ato_dx < 10'sd5) && (ato_dy < 10'sd8);
 
   // BODY & BELLY
-  wire signed [11:0] b_dx = cx + 12'sd15; wire signed [11:0] b_dy = cy + 12'sd5;
-  wire signed [11:0] ab_dx = (b_dx < 12'sd0) ? -b_dx : b_dx;
-  wire signed [11:0] ab_dy = (b_dy < 12'sd0) ? -b_dy : b_dy;
-  wire body = (ab_dx < 12'sd40) && (ab_dy < 12'sd18);
-  wire belly = body && (cy > 12'sd12); 
+  wire signed [9:0] b_dx = dog_cx + 10'sd15; wire signed [9:0] b_dy = dog_cy + 10'sd5;
+  wire signed [9:0] ab_dx = (b_dx < 10'sd0) ? -b_dx : b_dx;
+  wire signed [9:0] ab_dy = (b_dy < 10'sd0) ? -b_dy : b_dy;
+  wire body = (ab_dx < 10'sd40) && (ab_dy < 10'sd18);
+  wire belly = body && (dog_cy > 10'sd12); 
 
   // LEGS & PAWS
-  wire signed [11:0] fl_y = cy - 12'sd10;
-  wire signed [11:0] fl_x = cx - 12'sd10 - swing;
-  wire signed [11:0] afl_x = (fl_x < 12'sd0) ? -fl_x : fl_x;
-  wire f_leg = (afl_x < 12'sd6) && (fl_y > 12'sd0) && (fl_y < 12'sd25);
-  wire f_paw = (afl_x < 12'sd8) && (fl_y > 12'sd20) && (fl_y < 12'sd25) && (fl_x > -12'sd2); 
+  wire signed [9:0] fl_y = dog_cy - 10'sd10;
+  wire signed [9:0] fl_x = dog_cx - 10'sd10 - swing;
+  wire signed [9:0] afl_x = (fl_x < 10'sd0) ? -fl_x : fl_x;
+  wire f_leg = (afl_x < 10'sd6) && (fl_y > 10'sd0) && (fl_y < 10'sd25);
+  wire f_paw = (afl_x < 10'sd8) && (fl_y > 10'sd20) && (fl_y < 10'sd25) && (fl_x > -10'sd2); 
 
-  wire signed [11:0] fl2_x = cx - 12'sd5 + swing;
-  wire signed [11:0] afl2_x = (fl2_x < 12'sd0) ? -fl2_x : fl2_x;
-  wire f_leg2 = (afl2_x < 12'sd6) && (fl_y > 12'sd0) && (fl_y < 12'sd22);
-  wire f_paw2 = (afl2_x < 12'sd8) && (fl_y > 12'sd17) && (fl_y < 12'sd22) && (fl2_x > -12'sd2);
+  wire signed [9:0] fl2_x = dog_cx - 10'sd5 + swing;
+  wire signed [9:0] afl2_x = (fl2_x < 10'sd0) ? -fl2_x : fl2_x;
+  wire f_leg2 = (afl2_x < 10'sd6) && (fl_y > 10'sd0) && (fl_y < 10'sd22);
+  wire f_paw2 = (afl2_x < 10'sd8) && (fl_y > 10'sd17) && (fl_y < 10'sd22) && (fl2_x > -10'sd2);
 
-  wire signed [11:0] bl_y = cy - 12'sd10;
-  wire signed [11:0] bl_x = cx + 12'sd35 + swing;
-  wire signed [11:0] abl_x = (bl_x < 12'sd0) ? -bl_x : bl_x;
-  wire b_leg = (abl_x < 12'sd7) && (bl_y > 12'sd0) && (bl_y < 12'sd25);
-  wire b_paw = (abl_x < 12'sd9) && (bl_y > 12'sd20) && (bl_y < 12'sd25) && (bl_x > -12'sd2);
+  wire signed [9:0] bl_y = dog_cy - 10'sd10;
+  wire signed [9:0] bl_x = dog_cx + 10'sd35 + swing;
+  wire signed [9:0] abl_x = (bl_x < 10'sd0) ? -bl_x : bl_x;
+  wire b_leg = (abl_x < 10'sd7) && (bl_y > 10'sd0) && (bl_y < 10'sd25);
+  wire b_paw = (abl_x < 10'sd9) && (bl_y > 10'sd20) && (bl_y < 10'sd25) && (bl_x > -10'sd2);
 
-  wire signed [11:0] bl2_x = cx + 12'sd45 - swing;
-  wire signed [11:0] abl2_x = (bl2_x < 12'sd0) ? -bl2_x : bl2_x;
-  wire b_leg2 = (abl2_x < 12'sd7) && (bl_y > 12'sd0) && (bl_y < 12'sd22);
-  wire b_paw2 = (abl2_x < 12'sd9) && (bl_y > 12'sd17) && (bl_y < 12'sd22) && (bl2_x > -12'sd2);
+  wire signed [9:0] bl2_x = dog_cx + 10'sd45 - swing;
+  wire signed [9:0] abl2_x = (bl2_x < 10'sd0) ? -bl2_x : bl2_x;
+  wire b_leg2 = (abl2_x < 10'sd7) && (bl_y > 10'sd0) && (bl_y < 10'sd22);
+  wire b_paw2 = (abl2_x < 10'sd9) && (bl_y > 10'sd17) && (bl_y < 10'sd22) && (bl2_x > -10'sd2);
 
   // TAIL
-  wire signed [11:0] ty = cy + 12'sd15;
-  wire signed [11:0] tx = cx + 12'sd55 - tail_swing;
-  wire signed [11:0] atx = (tx < 12'sd0) ? -tx : tx;
-  wire tail = (atx < 12'sd5) && (ty < 12'sd0) && (ty > -12'sd25);
+  wire signed [9:0] ty = dog_cy + 10'sd15;
+  wire signed [9:0] tx = dog_cx + 10'sd55 - tail_swing;
+  wire signed [9:0] atx = (tx < 10'sd0) ? -tx : tx;
+  wire tail = (atx < 10'sd5) && (ty < 10'sd0) && (ty > -10'sd25);
 
   // =====================================================================
   // 8. COLOR COMPOSITION & FORMATTED MULTIPLEXER (Fixes line limits)
